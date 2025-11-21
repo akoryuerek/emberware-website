@@ -1,0 +1,26 @@
+# Emberware Website - Robots.txt
+# Allow all search engines
+
+User-agent: *
+Allow: /
+
+# Disallow nothing - all pages are public
+
+# Sitemap location
+Sitemap: https://www.emberware.de/sitemap.xml
+
+# Crawl-delay (optional - 1 second)
+Crawl-delay: 1
+
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /

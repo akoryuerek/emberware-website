@@ -3,11 +3,82 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emberware - TV Management für Sport-Venues</title>
-  <meta name="description" content="Professionelle TV-Steuerung für Wettbüros, Sportbars und Gastro. Zentrale Verwaltung aller Bildschirme, Live-Streams und Layouts.">
-  <link rel="icon" type="image/png" href="favicon.png">
-  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- SEO Meta Tags -->
+  <title>Emberware - TV Management System für Wettbüros, Sportbars & Gastro</title>
+  <meta name="description" content="Professionelle TV-Steuerung für Wettbüros, Sportbars und Gastro. Zentrale Verwaltung aller Bildschirme, Live-Streams und Layouts in Echtzeit. Multi-Screen Layouts, Health Monitoring, 24/7 Support.">
+  <meta name="keywords" content="TV Management, Digital Signage, Sportbar, Wettbüro, Gastro, Live-Streams, Bildschirmsteuerung, Raspberry Pi, Samsung Smart TV, Multi-Screen, IPTV, HLS Streaming">
+  <meta name="author" content="ASE GmbH">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://www.emberware.de/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://www.emberware.de/">
+  <meta property="og:title" content="Emberware - TV Management System für Sport-Venues">
+  <meta property="og:description" content="Professionelle TV-Steuerung für Wettbüros, Sportbars und Gastro. Zentrale Verwaltung aller Bildschirme, Live-Streams und Layouts in Echtzeit.">
+  <meta property="og:image" content="https://www.emberware.de/emberware-logo.png">
+  <meta property="og:locale" content="de_DE">
+  <meta property="og:site_name" content="Emberware">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://www.emberware.de/">
+  <meta name="twitter:title" content="Emberware - TV Management System für Sport-Venues">
+  <meta name="twitter:description" content="Professionelle TV-Steuerung für Wettbüros, Sportbars und Gastro. Zentrale Verwaltung aller Bildschirme, Live-Streams und Layouts.">
+  <meta name="twitter:image" content="https://www.emberware.de/emberware-logo.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="emberware-logo.png">
+  <link rel="apple-touch-icon" href="emberware-logo.png">
+
+  <!-- Structured Data (Schema.org for SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Emberware",
+    "applicationCategory": "BusinessApplication",
+    "description": "TV Management System für zentrale Steuerung und Verwaltung von Bildschirmen in Sport-Venues",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "EUR",
+      "description": "Kostenlose Demo verfügbar"
+    },
+    "operatingSystem": "Web Browser, Raspberry Pi, Samsung Tizen",
+    "publisher": {
+      "@type": "Organization",
+      "name": "ASE GmbH",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Bürgermeister-Mahr-Str. 32",
+        "postalCode": "63179",
+        "addressLocality": "Obertshausen",
+        "addressCountry": "DE"
+      },
+      "telephone": "+49-6104-7751080",
+      "email": "info@emberware.de"
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "24"
+    }
+  }
+  </script>
+
+  <!-- Performance Optimization -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com" defer></script>
+
+  <!-- Google Fonts with display=swap for performance -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -215,7 +286,7 @@
   <section class="py-16 px-6 relative">
     <div class="max-w-6xl mx-auto">
       <div class="relative rounded-2xl overflow-hidden border border-cyber-500/30 shadow-2xl shadow-cyber-500/10">
-        <img src="screenshot-board.svg" alt="Emberware Dashboard - Location Board mit TV Portraits und Videowall" class="w-full h-auto"/>
+        <img src="screenshot-board.svg" alt="Emberware Dashboard - Location Board mit TV Portraits und Videowall" class="w-full h-auto" loading="lazy" width="1200" height="700"/>
         <div class="absolute inset-0 bg-gradient-to-t from-graphite-950 via-transparent to-transparent pointer-events-none"></div>
       </div>
       <p class="text-center text-gray-500 text-sm mt-4">Location Board: Portrait-TVs, Videowall und Echtzeit-Status auf einen Blick</p>
