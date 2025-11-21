@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#06b6d4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <!-- SEO Meta Tags -->
   <title>Emberware - TV Management System für Wettbüros, Sportbars & Gastro</title>
@@ -11,6 +14,10 @@
   <meta name="author" content="ASE GmbH">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://www.emberware.de/">
+
+  <!-- Google Search Console Verification -->
+  <!-- TODO: Ersetze mit echtem Code von https://search.google.com/search-console -->
+  <!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE"> -->
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -78,8 +85,9 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com" defer></script>
 
-  <!-- Google Fonts with display=swap for performance -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Preload critical fonts for faster rendering -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
   <script>
     tailwind.config = {
       theme: {
@@ -192,6 +200,18 @@
     .corner-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; }
     .corner-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; }
   </style>
+
+  <!-- Microsoft Clarity Analytics (DSGVO-konform) -->
+  <!-- TODO: Registriere auf https://clarity.microsoft.com und ersetze mit echtem Projekt-ID -->
+  <!--
+  <script type="text/javascript">
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "YOUR_PROJECT_ID");
+  </script>
+  -->
 </head>
 <body class="bg-graphite-950 text-gray-100 font-sans antialiased">
 
