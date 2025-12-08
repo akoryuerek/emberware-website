@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Assignment Workflow</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&family=SF+Mono:wght@400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #ffffff;
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f7;
+            --gray-200: #e8e8ed;
+            --gray-400: #d2d2d7;
+            --gray-500: #86868b;
+            --gray-600: #6e6e73;
+            --gray-900: #1d1d1f;
+            --blue: #0071e3;
+            --blue-hover: #0077ed;
+            --green: #34c759;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--white);
+            color: var(--gray-900);
+            line-height: 1.47059;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Header */
+        .header {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 94px 22px 44px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 56px;
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            line-height: 1.07143;
+            color: var(--gray-900);
+        }
+
+        .header p {
+            font-size: 21px;
+            font-weight: 400;
+            color: var(--gray-600);
+            margin-top: 6px;
+        }
+
+        /* Main */
+        .main {
+            max-width: 1068px;
+            margin: 0 auto;
+            padding: 0 22px 80px;
+        }
+
+        /* Layer */
+        .layer {
+            margin-bottom: 40px;
+        }
+
+        .layer-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--gray-500);
+            margin-bottom: 12px;
+        }
+
+        /* Steps Grid */
+        .steps {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Step Card */
+        .step {
+            flex: 1;
+            max-width: 200px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 18px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+            position: relative;
+        }
+
+        .step:hover {
+            border-color: var(--gray-400);
+            transform: scale(1.02);
+        }
+
+        .step.active {
+            border-color: var(--blue);
+            background: linear-gradient(180deg, rgba(0,113,227,0.04) 0%, rgba(0,113,227,0.08) 100%);
+        }
+
+        .step.done {
+            border-color: var(--green);
+            background: linear-gradient(180deg, rgba(52,199,89,0.04) 0%, rgba(52,199,89,0.08) 100%);
+        }
+
+        .step-num {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 24px;
+            height: 24px;
+            background: var(--gray-100);
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--gray-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-num {
+            background: var(--blue);
+            color: var(--white);
+        }
+
+        .step.done .step-num {
+            background: var(--green);
+            color: var(--white);
+        }
+
+        .step-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 4px;
+        }
+
+        .step-sub {
+            font-size: 12px;
+            font-family: 'SF Mono', ui-monospace, monospace;
+            color: var(--gray-500);
+        }
+
+        /* Connector */
+        .connector {
+            width: 24px;
+            height: 2px;
+            background: var(--gray-200);
+            flex-shrink: 0;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        .connector::after {
+            content: '';
+            position: absolute;
+            right: -4px;
+            top: -3px;
+            width: 8px;
+            height: 8px;
+            border-right: 2px solid var(--gray-200);
+            border-bottom: 2px solid var(--gray-200);
+            transform: rotate(-45deg);
+            transition: border-color 0.3s ease;
+        }
+
+        .connector.active {
+            background: var(--blue);
+        }
+
+        .connector.active::after {
+            border-color: var(--blue);
+        }
+
+        /* Panel */
+        .panel {
+            background: var(--gray-50);
+            border-radius: 24px;
+            padding: 40px;
+            margin-top: 56px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .panel-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 980px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-hover);
+        }
+
+        .btn-secondary {
+            background: var(--white);
+            color: var(--gray-900);
+            border: 1px solid var(--gray-200);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-100);
+        }
+
+        /* Progress */
+        .progress-track {
+            height: 4px;
+            background: var(--gray-200);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--blue);
+            width: 0%;
+            transition: width 0.4s ease;
+            border-radius: 2px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        /* Detail */
+        .detail {
+            background: var(--white);
+            border-radius: 18px;
+            padding: 28px;
+            margin-top: 28px;
+        }
+
+        .detail-title {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .detail-text {
+            font-size: 15px;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        .detail-code {
+            background: var(--gray-900);
+            color: #a1a1a6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'SF Mono', ui-monospace, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .detail-code .keyword { color: #ff7b72; }
+        .detail-code .string { color: #a5d6ff; }
+        .detail-code .comment { color: #6e7681; }
+
+        /* Result */
+        .result {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 80px;
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .result-item {
+            text-align: center;
+        }
+
+        .result-label {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--gray-500);
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #5e5ce6 0%, #bf5af2 100%);
+            border-radius: 50%;
+            margin: 0 auto 8px;
+        }
+
+        .device {
+            width: 56px;
+            height: 96px;
+            background: var(--white);
+            border: 2px solid var(--gray-200);
+            border-radius: 12px;
+            margin: 0 auto 8px;
+            padding: 4px;
+            transition: all 0.4s ease;
+        }
+
+        .device.on {
+            border-color: var(--green);
+            box-shadow: 0 0 0 4px rgba(52,199,89,0.15);
+        }
+
+        .device-slots {
+            display: grid;
+            grid-template-rows: repeat(3, 1fr);
+            gap: 3px;
+            height: 100%;
+        }
+
+        .slot {
+            background: var(--gray-100);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .slot.on {
+            background: var(--blue);
+        }
+
+        .result-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Stream Assignment</h1>
+        <p>14 Schritte von der Auswahl bis zur Wiedergabe</p>
+    </header>
+
+    <main class="main">
+        <!-- Frontend -->
+        <section class="layer">
+            <div class="layer-label">Frontend</div>
+            <div class="steps">
+                <div class="step" data-n="1">
+                    <span class="step-num">1</span>
+                    <div class="step-title">Stream-Auswahl</div>
+                    <div class="step-sub">DeviceStreamAssignment</div>
+                </div>
+                <div class="connector" data-c="1"></div>
+                <div class="step" data-n="2">
+                    <span class="step-num">2</span>
+                    <div class="step-title">API Request</div>
+                    <div class="step-sub">PUT /devices/streams</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Backend -->
+        <section class="layer">
+            <div class="layer-label">Backend</div>
+            <div class="steps">
+                <div class="step" data-n="3">
+                    <span class="step-num">3</span>
+                    <div class="step-title">CQRS Command</div>
+                    <div class="step-sub">UpdateStreamsCmd</div>
+                </div>
+                <div class="connector" data-c="2"></div>
+                <div class="step" data-n="4">
+                    <span class="step-num">4</span>
+                    <div class="step-title">DB Update</div>
+                    <div class="step-sub">EF Core</div>
+                </div>
+                <div class="connector" data-c="3"></div>
+                <div class="step" data-n="5">
+                    <span class="step-num">5</span>
+                    <div class="step-title">Channel Load</div>
+                    <div class="step-sub">GetByIdAsync</div>
+                </div>
+                <div class="connector" data-c="4"></div>
+                <div class="step" data-n="6">
+                    <span class="step-num">6</span>
+                    <div class="step-title">Config Build</div>
+                    <div class="step-sub">TryDeployConfig</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SignalR -->
+        <section class="layer">
+            <div class="layer-label">SignalR</div>
+            <div class="steps">
+                <div class="step" data-n="7">
+                    <span class="step-num">7</span>
+                    <div class="step-title">Device Push</div>
+                    <div class="step-sub">UpdateConfig</div>
+                </div>
+                <div class="connector" data-c="5"></div>
+                <div class="step" data-n="8">
+                    <span class="step-num">8</span>
+                    <div class="step-title">Proxy Push</div>
+                    <div class="step-sub">ProxyDto</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Proxy -->
+        <section class="layer">
+            <div class="layer-label">Proxy</div>
+            <div class="steps">
+                <div class="step" data-n="9">
+                    <span class="step-num">9</span>
+                    <div class="step-title">Config Fetch</div>
+                    <div class="step-sub">GetPlayerConfig</div>
+                </div>
+                <div class="connector" data-c="6"></div>
+                <div class="step" data-n="10">
+                    <span class="step-num">10</span>
+                    <div class="step-title">Player Type</div>
+                    <div class="step-sub">DetermineType</div>
+                </div>
+                <div class="connector" data-c="7"></div>
+                <div class="step" data-n="11">
+                    <span class="step-num">11</span>
+                    <div class="step-title">OME Provision</div>
+                    <div class="step-sub">EnsureStream</div>
+                </div>
+                <div class="connector" data-c="8"></div>
+                <div class="step" data-n="12">
+                    <span class="step-num">12</span>
+                    <div class="step-title">HTML Build</div>
+                    <div class="step-sub">RazorLight</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Device -->
+        <section class="layer">
+            <div class="layer-label">Device</div>
+            <div class="steps">
+                <div class="step" data-n="13">
+                    <span class="step-num">13</span>
+                    <div class="step-title">HTML Load</div>
+                    <div class="step-sub">TizenBrowser</div>
+                </div>
+                <div class="connector" data-c="9"></div>
+                <div class="step" data-n="14">
+                    <span class="step-num">14</span>
+                    <div class="step-title">LL-HLS Play</div>
+                    <div class="step-sub">hls.js</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Panel -->
+        <section class="panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Animation</h2>
+                <div class="panel-actions">
+                    <button class="btn btn-secondary" id="resetBtn">Reset</button>
+                    <button class="btn btn-primary" id="playBtn">Play</button>
+                </div>
+            </div>
+
+            <div class="progress-track">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="progress-labels">
+                <span>UI</span>
+                <span>Backend</span>
+                <span>SignalR</span>
+                <span>Proxy</span>
+                <span>Device</span>
+            </div>
+
+            <div class="detail">
+                <h3 class="detail-title" id="detailTitle">Workflow starten</h3>
+                <p class="detail-text" id="detailText">Klicke Play um den vollständigen Workflow zu sehen.</p>
+                <pre class="detail-code" id="detailCode" style="display:none"></pre>
+            </div>
+
+            <div class="result">
+                <div class="result-item">
+                    <div class="result-label">Bediener</div>
+                    <div class="avatar"></div>
+                    <div class="result-name">Management UI</div>
+                </div>
+                <div class="result-item">
+                    <div class="result-label">Portrait Display</div>
+                    <div class="device" id="device">
+                        <div class="device-slots">
+                            <div class="slot" id="slot1"></div>
+                            <div class="slot" id="slot2"></div>
+                            <div class="slot" id="slot3"></div>
+                        </div>
+                    </div>
+                    <div class="result-name">Samsung Tizen</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        const data = [
+            { t: 'Stream-Auswahl', d: 'Der Bediener wählt Layout und Channels in der Management UI.', c: "const layout = ref('vertical-3')\nconst stream1Id = ref('bundesliga')" },
+            { t: 'API Request', d: 'HTTP PUT sendet Layout und Stream-IDs an die API.', c: "PUT /api/devices/42/streams\n{ layout: 'vertical-3', streams: [...] }" },
+            { t: 'CQRS Command', d: 'MediatR dispatched den Command an den Handler.', c: "await _mediator.Send(\n  new UpdateDeviceStreamsCommand(...))" },
+            { t: 'DB Update', d: 'EF Core speichert die neuen Stream-IDs.', c: "device.Layout = 'vertical-3';\nawait _repository.UpdateAsync(device);" },
+            { t: 'Channel Load', d: 'Channel-Daten werden aus der Datenbank geladen.', c: "var channel = await _channelRepo\n  .GetByIdAsync(id);" },
+            { t: 'Config Build', d: 'Player-Konfiguration wird zusammengestellt.', c: "var config = new PlayerConfig {\n  DeviceId = 42, Layout = layout };" },
+            { t: 'Device Push', d: 'Config wird per SignalR an das Device gesendet.', c: "await _hub.Clients.Client(id)\n  .SendAsync('UpdateConfig', cfg);" },
+            { t: 'Proxy Push', d: 'Proxy erhält die Channel-Liste.', c: "await _hub.Clients.Client(proxyId)\n  .SendAsync('Proxy', dto);" },
+            { t: 'Config Fetch', d: 'PlayerOrchestrator holt Config von der API.', c: "var config = await _configService\n  .GetPlayerConfigAsync(deviceId);" },
+            { t: 'Player Type', d: 'Auto-Erkennung: HtmlPlayer oder CSharpPlayer.', c: "var type = deviceType == 'EmberwarePlayer'\n  ? 'CSharp' : 'Html';" },
+            { t: 'OME Provision', d: 'Streams werden parallel in OME provisioniert.', c: "await Task.WhenAll(\n  streams.Select(s => ProvisionAsync(s)));" },
+            { t: 'HTML Build', d: 'Razor Template wird mit RazorLight gerendert.', c: "var html = await _razor\n  .CompileRenderAsync('Tizen.cshtml', vm);" },
+            { t: 'HTML Load', d: 'Tizen Browser lädt das generierte HTML.', c: "connection.on('UpdateConfig', cfg =>\n  updateLayout(cfg));" },
+            { t: 'LL-HLS Play', d: 'Low-Latency HLS Streams werden abgespielt.', c: "hls.loadSource(\n  'http://proxy:8080/stream/llhls.m3u8');" }
+        ];
+
+        const total = 14;
+        let cur = 0, run = false, timer = null;
+
+        const $ = id => document.getElementById(id);
+        const $$ = sel => document.querySelectorAll(sel);
+
+        function show(n) {
+            $$('.step').forEach((el, i) => {
+                el.classList.remove('active', 'done');
+                if (i + 1 < n) el.classList.add('done');
+                if (i + 1 === n) el.classList.add('active');
+            });
+            $$('.connector').forEach((el, i) => {
+                el.classList.toggle('active', i + 1 < n);
+            });
+            $('progressBar').style.width = (n / total * 100) + '%';
+            if (n > 0 && n <= total) {
+                const s = data[n - 1];
+                $('detailTitle').textContent = s.t;
+                $('detailText').textContent = s.d;
+                $('detailCode').textContent = s.c;
+                $('detailCode').style.display = 'block';
+            }
+            if (n >= total) {
+                $('slot1').classList.add('on');
+                $('slot2').classList.add('on');
+                $('slot3').classList.add('on');
+                $('device').classList.add('on');
+            }
+        }
+
+        function play() {
+            if (run) return;
+            run = true;
+            cur = 0;
+            reset();
+            timer = setInterval(() => {
+                cur++;
+                show(cur);
+                if (cur >= total) {
+                    clearInterval(timer);
+                    run = false;
+                }
+            }, 600);
+        }
+
+        function reset() {
+            cur = 0;
+            run = false;
+            if (timer) clearInterval(timer);
+            $$('.step').forEach(el => el.classList.remove('active', 'done'));
+            $$('.connector').forEach(el => el.classList.remove('active'));
+            $('progressBar').style.width = '0%';
+            $('slot1').classList.remove('on');
+            $('slot2').classList.remove('on');
+            $('slot3').classList.remove('on');
+            $('device').classList.remove('on');
+            $('detailTitle').textContent = 'Workflow starten';
+            $('detailText').textContent = 'Klicke Play um den vollständigen Workflow zu sehen.';
+            $('detailCode').style.display = 'none';
+        }
+
+        $('playBtn').addEventListener('click', play);
+        $('resetBtn').addEventListener('click', reset);
+        $$('.step').forEach(el => {
+            el.addEventListener('click', () => show(+el.dataset.n));
+        });
+    </script>
+</body>
+</html>

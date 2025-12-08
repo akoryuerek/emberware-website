@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emberware - Smart TV Control Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --white: #ffffff;
+            --gray-50: #fafafa;
+            --gray-100: #f5f5f7;
+            --gray-200: #e8e8ed;
+            --gray-400: #d2d2d7;
+            --gray-500: #86868b;
+            --gray-600: #6e6e73;
+            --gray-900: #1d1d1f;
+            --blue: #0071e3;
+            --blue-hover: #0077ed;
+            --green: #34c759;
+            --red: #ff3b30;
+            --purple: #af52de;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-snap-type: y mandatory;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--white);
+            color: var(--gray-900);
+            line-height: 1.47059;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 12px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 21px;
+            letter-spacing: -0.01em;
+        }
+
+        .logo-mark {
+            width: 32px;
+            height: 32px;
+            background: var(--gray-900);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .nav-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--gray-400);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-dot.active {
+            background: var(--gray-900);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* Slides */
+        .slide {
+            min-height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 22px 60px;
+        }
+
+        .slide-inner {
+            max-width: 980px;
+            width: 100%;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 12px;
+        }
+
+        .hero h1 {
+            font-size: 80px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+            line-height: 1.05;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(90deg, var(--blue) 0%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-sub {
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--gray-600);
+            max-width: 700px;
+            margin: 0 auto 40px;
+            line-height: 1.35;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 28px;
+            border-radius: 980px;
+            font-family: inherit;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--blue-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--blue);
+        }
+
+        .btn-secondary:hover {
+            text-decoration: underline;
+        }
+
+        /* Mockup */
+        .hero-mockup {
+            margin-top: 60px;
+            background: var(--gray-100);
+            border-radius: 18px;
+            padding: 12px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .mockup-bar {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+        }
+
+        .mockup-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gray-400);
+        }
+
+        .mockup-screen {
+            background: var(--white);
+            border-radius: 12px;
+            aspect-ratio: 16/9;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 16px;
+        }
+
+        .stream-box {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--gray-400);
+        }
+
+        .stream-label {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: var(--gray-900);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--red);
+            border-radius: 50%;
+        }
+
+        /* Section Header */
+        .section-head {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.07;
+            margin-bottom: 16px;
+        }
+
+        .section-sub {
+            font-size: 21px;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Problem Cards */
+        .problems {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .problem {
+            background: var(--gray-50);
+            border-radius: 18px;
+            padding: 28px;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .problem:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+        }
+
+        .problem-num {
+            width: 32px;
+            height: 32px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-500);
+            margin-bottom: 20px;
+        }
+
+        .problem h3 {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .problem p {
+            font-size: 15px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        /* Features */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .feature {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 18px;
+            padding: 28px;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            border-color: var(--blue);
+        }
+
+        .feature.wide {
+            grid-column: span 2;
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--white);
+        }
+
+        .feature h3 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .feature p {
+            font-size: 15px;
+            color: var(--gray-600);
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            background: var(--gray-100);
+            border-radius: 980px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--gray-600);
+        }
+
+        /* Multi-stream Demo */
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+            aspect-ratio: 16/9;
+            max-width: 400px;
+        }
+
+        .demo-cell {
+            background: var(--gray-100);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--gray-500);
+            border: 1px solid var(--gray-200);
+        }
+
+        /* Use Cases */
+        .cases {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .case {
+            background: var(--gray-50);
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+        }
+
+        .case:hover {
+            transform: scale(1.02);
+        }
+
+        .case-image {
+            aspect-ratio: 4/3;
+            background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gray-400);
+        }
+
+        .case-body {
+            padding: 24px;
+        }
+
+        .case h3 {
+            font-size: 19px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .case p {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            padding: 60px 0;
+            margin-top: 60px;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(90deg, var(--blue) 0%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        /* Tech */
+        .tech-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .tech-item {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .tech-item:hover {
+            border-color: var(--blue);
+        }
+
+        .tech-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        /* Architecture */
+        .arch {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 24px;
+            padding: 48px;
+            margin-top: 48px;
+        }
+
+        .arch-label {
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--gray-500);
+            margin-bottom: 24px;
+        }
+
+        .arch-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .arch-box {
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 16px 24px;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .arch-box.hl {
+            border-color: var(--blue);
+        }
+
+        .arch-box h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .arch-box p {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .arch-line {
+            width: 2px;
+            height: 32px;
+            background: var(--gray-200);
+            margin: 0 auto 20px;
+        }
+
+        /* Slide Counter */
+        .counter {
+            position: fixed;
+            bottom: 22px;
+            left: 22px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-500);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .counter span {
+            color: var(--gray-900);
+        }
+
+        /* Keyboard Hint */
+        .hint {
+            position: fixed;
+            bottom: 22px;
+            right: 22px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        .key {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 900px) {
+            .hero h1 { font-size: 48px; }
+            .hero-sub { font-size: 21px; }
+            .section-title { font-size: 40px; }
+            .problems, .features, .cases { grid-template-columns: 1fr; }
+            .feature.wide { grid-column: span 1; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .hint { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <div class="logo-mark">E</div>
+            <span>Emberware</span>
+        </div>
+        <div class="nav-dots">
+            <div class="nav-dot active" data-slide="0"></div>
+            <div class="nav-dot" data-slide="1"></div>
+            <div class="nav-dot" data-slide="2"></div>
+            <div class="nav-dot" data-slide="3"></div>
+            <div class="nav-dot" data-slide="4"></div>
+        </div>
+    </nav>
+
+    <div class="counter"><span id="cur">01</span> / 05</div>
+    <div class="hint"><span class="key">↑</span><span class="key">↓</span> Navigation</div>
+
+    <!-- Hero -->
+    <section class="slide" id="s0">
+        <div class="slide-inner hero">
+            <div class="hero-eyebrow">Smart TV Management Platform</div>
+            <h1>Control Center<br><span>für Sportvenues</span></h1>
+            <p class="hero-sub">Die zentrale Plattform zur Steuerung aller Samsung Smart TVs. Live-Streaming, Multi-Screen und Echtzeit-Kontrolle.</p>
+            <div class="hero-cta">
+                <button class="btn btn-primary" onclick="go(4)">Technologie</button>
+                <button class="btn btn-secondary" onclick="go(2)">Features</button>
+            </div>
+            <div class="hero-mockup">
+                <div class="mockup-bar">
+                    <div class="mockup-dot"></div>
+                    <div class="mockup-dot"></div>
+                    <div class="mockup-dot"></div>
+                </div>
+                <div class="mockup-screen">
+                    <div class="stream-box"><span class="stream-label"><span class="live-dot"></span>Bundesliga</span></div>
+                    <div class="stream-box"><span class="stream-label"><span class="live-dot"></span>Champions League</span></div>
+                    <div class="stream-box"><span class="stream-label"><span class="live-dot"></span>NBA</span></div>
+                    <div class="stream-box"><span class="stream-label"><span class="live-dot"></span>Tennis</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem -->
+    <section class="slide" id="s1">
+        <div class="slide-inner">
+            <div class="section-head">
+                <div class="section-tag">Das Problem</div>
+                <h2 class="section-title">TV-Management ist komplex</h2>
+                <p class="section-sub">Sportsbars und Venues kämpfen täglich mit ineffizienter Steuerung</p>
+            </div>
+            <div class="problems">
+                <div class="problem">
+                    <div class="problem-num">1</div>
+                    <h3>Manuelle Steuerung</h3>
+                    <p>Personal muss zu jedem TV laufen. Bei 20+ Geräten ein enormer Zeitaufwand.</p>
+                </div>
+                <div class="problem">
+                    <div class="problem-num">2</div>
+                    <h3>Keine Übersicht</h3>
+                    <p>Welcher TV zeigt was? Ohne Dashboard fehlt der Gesamtüberblick.</p>
+                </div>
+                <div class="problem">
+                    <div class="problem-num">3</div>
+                    <h3>Inkonsistente Qualität</h3>
+                    <p>Verschiedene Receiver, unterschiedliche Streams, kein einheitliches Erlebnis.</p>
+                </div>
+                <div class="problem">
+                    <div class="problem-num">4</div>
+                    <h3>Hardware-Chaos</h3>
+                    <p>Verschiedene Receiver-Typen und Fernbedienungen. Hoher Wartungsaufwand.</p>
+                </div>
+                <div class="problem">
+                    <div class="problem-num">5</div>
+                    <h3>Personalkosten</h3>
+                    <p>Dediziertes Personal für TV-Management bindet wichtige Ressourcen.</p>
+                </div>
+                <div class="problem">
+                    <div class="problem-num">6</div>
+                    <h3>Langsame Reaktion</h3>
+                    <p>Gast wünscht anderen Sender? Bis Personal reagiert, ist das Tor gefallen.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="slide" id="s2">
+        <div class="slide-inner">
+            <div class="section-head">
+                <div class="section-tag">Die Lösung</div>
+                <h2 class="section-title">Emberware Features</h2>
+                <p class="section-sub">Eine Plattform für alle Display-Management-Anforderungen</p>
+            </div>
+            <div class="features">
+                <div class="feature wide">
+                    <div class="feature-icon">4K</div>
+                    <h3>Multi-Stream Display</h3>
+                    <p>Bis zu 4 Live-Streams gleichzeitig auf einem Display. Flexible Layouts für parallele Sportereignisse.</p>
+                    <div class="demo-grid">
+                        <div class="demo-cell">Stream 1</div>
+                        <div class="demo-cell">Stream 2</div>
+                        <div class="demo-cell">Stream 3</div>
+                        <div class="demo-cell">Stream 4</div>
+                    </div>
+                    <div class="tags" style="margin-top:16px">
+                        <span class="tag">Single</span>
+                        <span class="tag">Vertical-3</span>
+                        <span class="tag">Grid 2x2</span>
+                        <span class="tag">LL-HLS</span>
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">RX</div>
+                    <h3>Receiver Pool</h3>
+                    <p>Automatische Verwaltung aller Receiver mit intelligentem Pool-Routing.</p>
+                    <div class="tags">
+                        <span class="tag">Sky</span>
+                        <span class="tag">Amino</span>
+                        <span class="tag">LigTV</span>
+                        <span class="tag">VuPlus</span>
+                        <span class="tag">IPTV</span>
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">MAP</div>
+                    <h3>Location Board</h3>
+                    <p>Visuelles 17×12 Board-Layout. Drag & Drop Positionierung. Live-Status.</p>
+                    <div class="tags">
+                        <span class="tag">Drag & Drop</span>
+                        <span class="tag">Live Status</span>
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">SYS</div>
+                    <h3>Health Monitoring</h3>
+                    <p>CPU, Memory, Temperatur. Screenshots für Remote-Debugging.</p>
+                    <div class="tags">
+                        <span class="tag">CPU/RAM</span>
+                        <span class="tag">Screenshots</span>
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">MDC</div>
+                    <h3>Samsung MDC</h3>
+                    <p>Power, Volume, Input Source. Bulk-Aktionen für mehrere TVs.</p>
+                    <div class="tags">
+                        <span class="tag">Power Control</span>
+                        <span class="tag">Bulk Actions</span>
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">LOC</div>
+                    <h3>Multi-Standort</h3>
+                    <p>Beliebig viele Standorte zentral verwalten. Rollenbasierter Zugriff.</p>
+                    <div class="tags">
+                        <span class="tag">Multi-Tenant</span>
+                        <span class="tag">RBAC</span>
+                        <span class="tag">SSO</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="slide" id="s3">
+        <div class="slide-inner">
+            <div class="section-head">
+                <div class="section-tag">Einsatzgebiete</div>
+                <h2 class="section-title">Für jede Venue</h2>
+                <p class="section-sub">Von der Sportsbar bis zum Stadion</p>
+            </div>
+            <div class="cases">
+                <div class="case">
+                    <div class="case-image">BAR</div>
+                    <div class="case-body">
+                        <h3>Sportsbars & Pubs</h3>
+                        <p>Perfekt für 5-30 TVs. Alle Spiele gleichzeitig, ein Klick zum Wechseln.</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <div class="case-image">HOTEL</div>
+                    <div class="case-body">
+                        <h3>Hotels & Resorts</h3>
+                        <p>Lobby, Konferenzräume, Sportbar. Zentrale Steuerung von der Rezeption.</p>
+                    </div>
+                </div>
+                <div class="case">
+                    <div class="case-image">ARENA</div>
+                    <div class="case-body">
+                        <h3>Stadien & Arenen</h3>
+                        <p>Hunderte Displays in VIP-Lounges und Gastrobereichen. Enterprise-ready.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-value">500+</div>
+                    <div class="stat-label">Verwaltete Geräte</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">99.9%</div>
+                    <div class="stat-label">Uptime SLA</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">&lt;2s</div>
+                    <div class="stat-label">Stream-Latenz</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-value">24/7</div>
+                    <div class="stat-label">Support</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech -->
+    <section class="slide" id="s4">
+        <div class="slide-inner">
+            <div class="section-head">
+                <div class="section-tag">Technologie</div>
+                <h2 class="section-title">Enterprise-grade</h2>
+                <p class="section-sub">Moderne Architektur für maximale Zuverlässigkeit</p>
+            </div>
+            <div class="tech-items">
+                <div class="tech-item"><div class="tech-icon" style="background:#512BD4">.N</div>.NET 10</div>
+                <div class="tech-item"><div class="tech-icon" style="background:#42b883">V</div>Vue 3</div>
+                <div class="tech-item"><div class="tech-icon" style="background:#0078D4">AZ</div>Azure</div>
+                <div class="tech-item"><div class="tech-icon" style="background:#ff6b35">SR</div>SignalR</div>
+                <div class="tech-item"><div class="tech-icon" style="background:#e535ab">LL</div>LL-HLS</div>
+                <div class="tech-item"><div class="tech-icon" style="background:#1428a0">TV</div>Tizen</div>
+            </div>
+            <div class="arch">
+                <div class="arch-label">Systemarchitektur</div>
+                <div class="arch-row">
+                    <div class="arch-box hl"><h4>Management UI</h4><p>Vue 3 + TypeScript</p></div>
+                </div>
+                <div class="arch-line"></div>
+                <div class="arch-row">
+                    <div class="arch-box"><h4>REST API</h4><p>ASP.NET 10</p></div>
+                    <div class="arch-box"><h4>Identity</h4><p>OpenIddict</p></div>
+                    <div class="arch-box"><h4>SignalR</h4><p>Real-time</p></div>
+                </div>
+                <div class="arch-line"></div>
+                <div class="arch-row">
+                    <div class="arch-box"><h4>Azure SQL</h4><p>Database</p></div>
+                    <div class="arch-box hl"><h4>OvenMediaEngine</h4><p>LL-HLS Streaming</p></div>
+                </div>
+                <div class="arch-line"></div>
+                <div class="arch-row">
+                    <div class="arch-box"><h4>Samsung Tizen</h4><p>Primary</p></div>
+                    <div class="arch-box"><h4>Raspberry Pi</h4><p>Legacy</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let cur = 0;
+        const total = 5;
+        const dots = document.querySelectorAll('.nav-dot');
+        const counter = document.getElementById('cur');
+
+        function upd(i) {
+            dots.forEach((d, j) => d.classList.toggle('active', j === i));
+            counter.textContent = String(i + 1).padStart(2, '0');
+            cur = i;
+        }
+
+        function go(i) {
+            if (i >= 0 && i < total) {
+                document.getElementById('s' + i).scrollIntoView({ behavior: 'smooth' });
+                upd(i);
+            }
+        }
+
+        const obs = new IntersectionObserver(entries => {
+            entries.forEach(e => {
+                if (e.isIntersecting) upd(+e.target.id.replace('s', ''));
+            });
+        }, { threshold: 0.5 });
+
+        for (let i = 0; i < total; i++) obs.observe(document.getElementById('s' + i));
+
+        document.addEventListener('keydown', e => {
+            if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); go(Math.min(cur + 1, total - 1)); }
+            if (e.key === 'ArrowUp') { e.preventDefault(); go(Math.max(cur - 1, 0)); }
+            if (e.key === 'Home') { e.preventDefault(); go(0); }
+            if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+        });
+
+        dots.forEach(d => d.addEventListener('click', () => go(+d.dataset.slide)));
+
+        let ty = 0;
+        document.addEventListener('touchstart', e => ty = e.changedTouches[0].screenY, { passive: true });
+        document.addEventListener('touchend', e => {
+            const d = ty - e.changedTouches[0].screenY;
+            if (Math.abs(d) > 50) go(d > 0 ? Math.min(cur + 1, total - 1) : Math.max(cur - 1, 0));
+        }, { passive: true });
+    </script>
+</body>
+</html>

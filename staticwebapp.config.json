@@ -27,7 +27,8 @@
     }
   ],
   "navigationFallback": {
-    "rewrite": "/index.html"
+    "rewrite": "/index.html",
+    "exclude": ["/tipwin/*"]
   },
   "responseOverrides": {
     "404": {
