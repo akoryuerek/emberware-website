@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emberware - Smart TV Control Platform</title>
+
+    <!-- Application Insights -->
+    <script type="text/javascript">
+    !function(T,l,y){var S=T.location,k="script",D="instrumentationKey",C="ingestionendpoint",I="disableExceptionTracking",E="ai.device.",b="toLowerCase",w="crossOrigin",N="POST",e="appInsightsSDK",t=y.name||"appInsights";(y.name||T[e])&&(T[e]=t);var n=T[t]||function(d){var g=!1,f=!1,m={initialize:!0,queue:[],sv:"5",version:2,config:d};function v(e,t){var n={},a="Browser";return n[E+"id"]=a[b](),n[E+"type"]=a,n["ai.operation.name"]=S&&S.pathname||"_unknown_",n["ai.internal.sdkVersion"]="javascript:snippet:"+(m.sv||m.version),n}var h={time:function(){return new Date},getExecTimeInMilliseconds:function(){return h.time()-a}},a=h.time();return{trackPageView:function(e,t){var n=d[C];n&&(t=t||{},d[I]||function(){for(var e,t=function(e,t){return e?(t=t||0,setTimeout(function(){e({isExec:!0})},t)):null},n=["trackEvent","trackPageView","trackException","trackTrace"],a=0;a<n.length;a++)e=n[a],m[e]=function(e){return function(){var t=arguments;m.queue.push(function(){return m[e].apply(m,t)})}}(e);var i=k[b]();g||t(function(e){var t=l.createElement(k);t.src=d.url||"https://js.monitor.azure.com/scripts/b/ai.2.min.js",t[w]="anonymous",t.onload=function(){try{T[e]=m,m.queue&&0===m.queue.length}catch(e){g=!0}},t.onerror=function(){f=!0,g=!0},l.getElementsByTagName(i)[0].parentNode.appendChild(t)},0)}(),m.trackPageView({name:S&&S.pathname||"_unknown_",uri:S&&S.href||"_unknown_",pageType:"Browser",properties:v()},t))}}}(y);T[t]=n}(window,document,{
+        connectionString:"InstrumentationKey=90065483-8570-4d88-a9af-9a7abeb24388;IngestionEndpoint=https://germanywestcentral-1.in.applicationinsights.azure.com/;LiveEndpoint=https://germanywestcentral.livediagnostics.monitor.azure.com/"
+    });
+    appInsights.trackPageView();
+    </script>
     <style>
         * {
             margin: 0;
